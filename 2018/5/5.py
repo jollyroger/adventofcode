@@ -7,22 +7,15 @@ def get_input(filename='input'):
     data = open(filename, 'r').read()
     return list(data.strip())
 
-def simplify_polymer(polymer, ignore=None):
+def simplify_polymer(polymer):
     new_polymer = []
-    if ignore:
-        ignore = ignore.lower()
-
     for new_ch in polymer:
-        if new_ch.lower() == ignore:
-            continue
-        try:
-            ch = new_polymer.pop()
-            if abs(ord(ch) - ord(new_ch)) == 32:
+        if new_polymer:
+            ch = new_polymer[-1]
+            if ch == new_ch.swapcase():
+                new_polymer.pop()
                 continue
-            new_polymer.append(ch)
-            new_polymer.append(new_ch)
-        except IndexError:
-            new_polymer.append(new_ch)
+        new_polymer.append(new_ch)
     return new_polymer
 
 
@@ -33,8 +26,8 @@ def task1(data):
 
 def task2(data):
     print("Task 01")
-    result = min([(unit, len(simplify_polymer(data, ignore=unit))) for unit in
-        ascii_lowercase], key=itemgetter(1))
+    result = min([len(simplify_polymer((c for c in data if c.lower() != unit)))
+        for unit in ascii_lowercase])
     print("Best size of the simplified polymer is: {}".format(result))
 
 
@@ -54,13 +47,13 @@ class TestCase1(unittest.TestCase):
                 self.simplified_polymer)
 
     def test_simplify2(self):
-        self.assertEqual(simplify_polymer(self.polymer, 'a'),
+        self.assertEqual(simplify_polymer([x for x in self.polymer if x.lower() != 'a']),
                 self.simplified_no_a)
-        self.assertEqual(simplify_polymer(self.polymer, 'b'),
+        self.assertEqual(simplify_polymer([x for x in self.polymer if x.lower() != 'b']),
                 self.simplified_no_b)
-        self.assertEqual(simplify_polymer(self.polymer, 'c'),
+        self.assertEqual(simplify_polymer([x for x in self.polymer if x.lower() != 'c']),
                 self.simplified_no_c)
-        self.assertEqual(simplify_polymer(self.polymer, 'd'),
+        self.assertEqual(simplify_polymer([x for x in self.polymer if x.lower() != 'd']),
                 self.simplified_no_d)
 
 
