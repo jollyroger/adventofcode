@@ -4,6 +4,7 @@ from collections import defaultdict
 import re
 import unittest
 
+
 class Test(unittest.TestCase):
     def setUp(self):
         self.points = ["position=< 9,  1> velocity=< 0,  2>",
@@ -53,8 +54,9 @@ class Test(unittest.TestCase):
         data = parse_input("\n".join(self.points))
         simulation = Simulation(data)
         solve(simulation)
-        self.assertEqual(simulation.ts , 3)
+        self.assertEqual(simulation.ts, 3)
         self.assertEqual(simulation.__str__(), self.sign)
+
 
 def parse_input(s):
     steps = []
@@ -68,15 +70,15 @@ def parse_input(s):
 
     return steps
 
+
 def get_input(filename='input'):
-    steps = []
-    expr = re.compile(r'-?\d+')
     return parse_input(open(filename, 'r').read())
+
 
 class Simulation(object):
     def __init__(self, start_state):
         self.state = list(start_state)
-        self.ts = 0 # timestamp
+        self.ts = 0  # timestamp
 
     def step(self, steps=1):
         self.ts += steps
@@ -84,17 +86,19 @@ class Simulation(object):
             x, y, dx, dy = p
             self.state[i] = (x + dx * steps, y + dy * steps, dx, dy)
 
-    def to_time(self, ts):
-        steps = ts - self.ts
-        self.step(steps)
-
     def region(self):
-        x_list, y_list, dx_list, dy_list = [i for i in zip(*self.state)]
-        return (min(x_list), min(y_list), max(x_list), max(y_list))
+        min_x = max_x = self.state[0][0]
+        min_y = max_y = self.state[0][1]
+        for x, y, _, _ in self.state:
+            min_x = min(x, min_x)
+            max_x = max(x, max_x)
+            min_y = min(y, min_y)
+            max_y = max(y, max_y)
+        return (min_x, min_y, max_x, max_y)
 
     def __str__(self):
         x1, y1, x2, y2 = self.region()
-        points = {(x,y):set() for x,y,_,_ in self.state}
+        points = {(x, y): set() for x, y, _, _ in self.state}
         result = ""
 
         for y in range(y1-1, y2+2):
