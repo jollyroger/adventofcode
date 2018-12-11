@@ -138,5 +138,5 @@ def main(argv):
 if __name__ == '__main__':
     import sys
     unittest.main(argv=sys.argv[:1], exit=False, verbosity=0)
-    raw_input()
+    input()
     main(sys.argv)
