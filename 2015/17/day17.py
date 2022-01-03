@@ -22,7 +22,14 @@ def combs2(items, total):
                 yield j
 def main():
     containers = parse(sys.stdin)
-    print sum([1 for i in combs(containers, 150)])
+    c =  [i for i in combs(containers, 150)]
+    c_len = len(c)
+    print "Task 1: %s" % c_len
+
+    c_len = [len(i) for i in c]
+    min_c_len = min(c_len)
+    c2_len = sum([1 for i in c_len if i == min_c_len])
+    print "Task 2: %s" % c2_len
 
 if __name__ == "__main__":
     main()
